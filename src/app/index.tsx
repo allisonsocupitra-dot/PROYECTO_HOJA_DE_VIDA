@@ -1,8 +1,32 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import MiBoton from "../Componentes/MiBoton";
 
+type Contacto = {
+  id: string;
+  texto: string;
+  icono: React.ComponentProps<typeof Ionicons>["name"];
+  color: string;
+  etiqueta: string;
+  dato: string;
+};
+
+const contactos: Contacto[] = [
+  { id: "correo", texto: "Enviar Correo", icono: "mail", color: "#E8D464", etiqueta: "Correo", dato: "allisonsofia@misena.edu.co" },
+  { id: "telefono", texto: "Llamar", icono: "call", color: "#5B7FE8", etiqueta: "Teléfono", dato: "320 376 4253" },
+  { id: "linkedin", texto: "Ver Perfil LinkedIn", icono: "logo-linkedin", color: "#0A66C2", etiqueta: "LinkedIn", dato: "linkedin.com/in/tu-usuario" },
+  { id: "facebook", texto: "Facebook", icono: "logo-facebook", color: "#1877F2", etiqueta: "Facebook", dato: "facebook.com/tu-usuario" },
+  { id: "github", texto: "GitHub", icono: "logo-github", color: "#24292f", etiqueta: "Repositorio", dato: "github.com/allisonsocupitra-dot/PROYECTO_HOJA_DE_VIDA" },
+];
+
 const Inicio = () => {
+  const [abierto, setAbierto] = useState<string | null>(null);
+
+  const alternar = (id: string) => {
+    setAbierto(abierto === id ? null : id);
+  };
+
   return (
     <ScrollView style={estilos.contenedor} contentContainerStyle={estilos.contenido}>
       <View style={estilos.avatarContenedor}>
@@ -22,36 +46,25 @@ const Inicio = () => {
 
       <View style={estilos.seccion}>
         <Text style={estilos.subtitulo}>Contacto</Text>
-        <MiBoton
-          textoBoton="Enviar Correo"
-          nombreIcono="mail"
-          colorBoton="#E8D464"
-          onPress={() => Alert.alert("Contacto", "Correo: tucorreo@misena.edu.co")}
-        />
-        <MiBoton
-          textoBoton="Llamar"
-          nombreIcono="call"
-          colorBoton="#5B7FE8"
-          onPress={() => Alert.alert("Contacto", "Teléfono: 300 000 0000")}
-        />
-        <MiBoton
-          textoBoton="Ver Perfil LinkedIn"
-          nombreIcono="logo-linkedin"
-          colorBoton="#0A66C2"
-          onPress={() => Alert.alert("LinkedIn", "linkedin.com/in/tu-usuario")}
-        />
-        <MiBoton
-          textoBoton="Facebook"
-          nombreIcono="logo-facebook"
-          colorBoton="#1877F2"
-          onPress={() => Alert.alert("Facebook", "facebook.com/tu-usuario")}
-        />
-        <MiBoton
-          textoBoton="GitHub"
-          nombreIcono="logo-github"
-          colorBoton="#24292f"
-          onPress={() => Alert.alert("Repositorio", "github.com/tu-usuario/MiHojaDeVida")}
-        />
+
+        {contactos.map((c) => (
+          <View key={c.id}>
+            <MiBoton
+              textoBoton={c.texto}
+              nombreIcono={c.icono}
+              colorBoton={c.color}
+              onPress={() => alternar(c.id)}
+            />
+            {abierto === c.id && (
+              <View style={[estilos.detalle, { borderLeftColor: c.color }]}>
+                <Text style={estilos.detalleEtiqueta}>{c.etiqueta}</Text>
+                <Text style={estilos.detalleDato} selectable>
+                  {c.dato}
+                </Text>
+              </View>
+            )}
+          </View>
+        ))}
       </View>
     </ScrollView>
   );
@@ -74,4 +87,13 @@ const estilos = StyleSheet.create({
   },
   subtitulo: { fontSize: 16, fontWeight: "bold", color: "#1e293b", marginBottom: 8 },
   parrafo: { fontSize: 14, color: "#475569", lineHeight: 20 },
+  detalle: {
+    backgroundColor: "#f1f5f9",
+    borderLeftWidth: 4,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 6,
+  },
+  detalleEtiqueta: { fontSize: 12, color: "#64748b", fontWeight: "600" },
+  detalleDato: { fontSize: 15, color: "#0f172a", fontWeight: "bold", marginTop: 2 },
 });
