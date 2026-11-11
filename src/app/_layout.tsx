@@ -1,9 +1,30 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { Pressable } from "react-native";
+import { TemaProvider, useTema } from "../context/TemaContext";
 
-export default function Layout() {
+function Pestanas() {
+  const { oscuro, alternarTema, c } = useTema();
+
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "#2563eb" }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: c.primario,
+        tabBarInactiveTintColor: c.textoTenue,
+        tabBarStyle: { backgroundColor: c.tarjeta, borderTopColor: c.borde },
+        headerStyle: { backgroundColor: c.tarjeta },
+        headerTintColor: c.texto,
+        headerRight: () => (
+          <Pressable onPress={alternarTema} style={{ marginRight: 16 }}>
+            <Ionicons
+              name={oscuro ? "sunny-outline" : "moon-outline"}
+              size={24}
+              color={c.texto}
+            />
+          </Pressable>
+        ),
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -45,5 +66,13 @@ export default function Layout() {
         }}
       />
     </Tabs>
+  );
+}
+
+export default function Layout() {
+  return (
+    <TemaProvider>
+      <Pestanas />
+    </TemaProvider>
   );
 }
